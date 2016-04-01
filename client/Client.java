@@ -14,6 +14,8 @@ public class Client {
 	DataInputStream is = null;
 	PrintStream os = null;
 	DataInputStream inputLine = null;
+
+	//KeyChain.printMe();
 	
 	/* 
 	 * open a socket on port 2222.
