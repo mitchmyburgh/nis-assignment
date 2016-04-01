@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.net.ServerSocket;
 import common.KeyChain;
 import common.AES;
-import common.Hash
+import common.Hash;
 import common.Zipfile;
 
 
@@ -53,7 +53,7 @@ public class Server {
 					String recievedHash =KeyChain.decrypt(parts[1], KeyChain.PUBLIC_KEY_CLIENT);
 					String calculatedHash = Hash.hash(parts[0]);
 					System.out.println("==== Plaintext Message =====");
-					System.out.println(parts[0])
+					System.out.println(parts[0]);
 					if (recievedHash.equals(calculatedHash)){
 						System.out.println("The content of the message is authenticated\nand the integrity has been verified");
 					}

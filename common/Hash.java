@@ -1,3 +1,5 @@
+package common;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -24,7 +26,7 @@ public class Hash {
 		return hash;
 	}
 	public static void main(String[] args){
-		String a=Hash("Hello World I am tumelobjdfdffgjhiofgfgjiogjiofgjio");
+		String a=Hash.hash("Hello World I am tumelobjdfdffgjhiofgfgjiogjiofgjio");
 		System.out.println(a);
 		}
 
