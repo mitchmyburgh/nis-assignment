@@ -3,7 +3,7 @@
 #2013/03/03
 
 JAVAC = javac
-JFLAGS = -g -cp '.:lib/org.bouncycastle.jar;common/;keys/'
+JFLAGS = -g -cp '.:lib/org.bouncycastle.jar'
 
 SOURCES = client/Client.java server/Server.java keys/KeyChain.java hash/Hash.java
 
@@ -31,11 +31,11 @@ common/AES.class: common/AES.java
  
 # explicit rules
 clean:
-	@rm compiled/*.class
+	@rm */*.class
 
 #Run the code
 run-client:
-	@java -cp client/ Client
+	@java -cp '.:lib/org.bouncycastle.jar;' client/Client
 
 run-server:
-	@java -cp server/ Server
+	@java -cp '.:lib/org.bouncycastle.jar;server/' Server
