@@ -3,6 +3,11 @@ import java.io.PrintStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.ServerSocket;
+import common.KeyChain;
+import common.AES;
+import common.Hash
+import common.Zipfile;
+
 
 public class Server {
 	public static void main(String args[]) {
@@ -34,8 +39,29 @@ public class Server {
 			/* Echo data back to client */
 			while (true) {
 				line = is.readLine();
+				System.out.println("==== Recieved Message ====");
 				System.out.println(line);
-				os.println("From server: "+line);
+				String[] parts = line.split("<EncryptedKeyStartsHere>");
+				if (parts.length==2){
+					String sessionKey = KeyChain.decrypt(parts[1], KeyChain.PRIVATE_KEY_SERVER);
+					System.out.println("==== Encrypted & Zipped Message ====");
+					System.out.println(parts[0]);
+					String zippedFile = AES.decrypt(sessionKey,parts[0]);
+					String plainTextAndHash = Zipfile.decompress(zippedFile.getBytes()); 
+					parts = line.split("<SignedHashStartsHere>");
+					String recievedHash =KeyChain.decrypt(parts[1], KeyChain.PUBLIC_KEY_CLIENT);
+					String calculatedHash = Hash.hash(parts[0]);
+					System.out.println("==== Plaintext Message =====");
+					System.out.println(parts[0])
+					if (recievedHash.equals(calculatedHash)){
+						System.out.println("The content of the message is authenticated\nand the integrity has been verified");
+					}
+
+				}
+				else 
+					System.out.println("Key not found");
+
+
 			}
 		} catch (IOException e) {
 			System.out.println(e);
