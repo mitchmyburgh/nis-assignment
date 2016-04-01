@@ -15,7 +15,7 @@ SOURCES = client/Client.java server/Server.java keys/KeyChain.java hash/Hash.jav
 
 #default rule - will be invoked by make
 
-client/Client.class: common/zipFile.class common/Hash.class common/KeyChain.class client/Client.java
+client/Client.class: server/Server.class common/AES.class common/zipFile.class common/Hash.class common/KeyChain.class client/Client.java
 
 server/Server.class: common/zipFile.class common/Hash.class common/KeyChain.class server/Server.java
 
