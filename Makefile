@@ -39,3 +39,6 @@ run-client:
 
 run-server:
 	@java -cp '.:lib/org.bouncycastle.jar' server/Server
+
+run-keygen:
+	@java -cp '.:lib/org.bouncycastle.jar' keys/KeyChain

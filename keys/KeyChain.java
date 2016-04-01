@@ -41,7 +41,10 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class KeyChain {
         public static final int KEY_SIZE = 2046;
-
+        public static final int PUBLIC_KEY_SERVER = 0;
+        public static final int PRIVATE_KEY_SERVER = 1;
+        public static final int PUBLIC_KEY_CLIENT = 2;
+        public static final int PRIVATE_KEY_CLIENT = 3;
 	// http://stackoverflow.com/questions/5789685/rsa-encryption-with-given-public-key-in-java
 	public static void main (String [] args) throws Exception {
 		/*KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -57,9 +60,9 @@ public class KeyChain {
                 System.out.println(pubKey);
                 System.out.println(privKey);*/
                 // generate server key pair
-                writeKeys("./server_pub.pem", "./server_priv.pem");
+                writeKeys("./keys/generated/server_pub.pem", "./keys/generated/server_priv.pem");
                 // generate client key pair
-                writeKeys("./client_pub.pem", "./client_priv.pem");
+                writeKeys("./keys/generated/client_pub.pem", "./keys/generated/client_priv.pem");
         }
         /**
         * Code adapted from http://stackoverflow.com/questions/29221947/unable-to-use-public-rsa-key-pem-file-created-with-bouncycastle-to-encrypt-fil
@@ -72,6 +75,7 @@ public class KeyChain {
             PublicKey pub = keyPair.getPublic();
             writePemFile(priv, "PRIVATE KEY", privatePath);
             writePemFile(pub, "PUBLIC KEY", publicPath);
+            System.out.println("Hello");
     }
 
     private static KeyPair generateRSAKeyPair(){
@@ -107,6 +111,131 @@ public class KeyChain {
         } 
 
     }
+
+    public static PublicKey readPublicKeyNative(String publicKeyPath) {
+        Security.addProvider(new BouncyCastleProvider());
+        KeyFactory factory = null;
+        PublicKey key = null;
+        byte[] publicKeyFileBytes = null;
+
+        try {
+            publicKeyFileBytes = Files.readAllBytes(Paths.get(publicKeyPath));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        String KeyString = new String(publicKeyFileBytes);
+        //System.out.println(KeyString);
+        //System.out.println("FORMATTED:");
+        KeyString = KeyString.replaceAll("-----BEGIN RSA PUBLIC KEY-----", "");
+        KeyString = KeyString.replaceAll("-----END RSA PUBLIC KEY-----", "");
+        KeyString = KeyString.replaceAll("[\n\r]", "");
+        KeyString = KeyString.trim();
+        //System.out.println(KeyString);
+
+        byte[] encoded = Base64.getDecoder().decode(KeyString);
+
+        // PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
+        try {
+            factory = KeyFactory.getInstance("RSA");
+            key = factory.generatePublic(keySpec);
+        } catch (NoSuchAlgorithmException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return key;
+    }
+
+    public static PrivateKey readPrivateKeyNative(String privateKeyPath) {
+        Security.addProvider(new BouncyCastleProvider());
+        KeyFactory factory = null;
+        PrivateKey key = null;
+        byte[] privateKeyFileBytes = null;
+
+        try {
+            privateKeyFileBytes = Files.readAllBytes(Paths.get(privateKeyPath));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        String KeyString = new String(privateKeyFileBytes);
+        //System.out.println(KeyString);
+        //System.out.println("FORMATTED:");
+        KeyString = KeyString.replaceAll("-----BEGIN RSA PRIVATE KEY-----", "");
+        KeyString = KeyString.replaceAll("-----END RSA PRIVATE KEY-----", "");
+        KeyString = KeyString.replaceAll("[\n\r]", "");
+        KeyString = KeyString.trim();
+        //System.out.println(KeyString);
+
+        byte[] encoded = Base64.getDecoder().decode(KeyString);
+
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
+        // X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
+        try {
+            factory = KeyFactory.getInstance("RSA");
+            key = factory.generatePrivate(keySpec);
+        } catch (NoSuchAlgorithmException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return key;
+    }
+
+    public static String encrypt(String plaintext, int keyInt) {
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
+        switch (keyInt){
+            case 0:
+                PublicKey key = readPublicKeyNative("./keys/generated/server_pub.pem");
+                break;
+            case 1:
+                PrivateKey key = readPrivateKeyNative("./keys/generated/server_priv.pem");
+                break;
+            case 2:
+                PublicKey key = readPublicKeyNative("./keys/generated/client_pub.pem");
+                break;
+            case 4:
+                PrivateKey key = readPrivateKeyNative("./keys/generated/client_priv.pem");
+                break;
+            default:
+                PrivateKey key = null;
+                System.out.println("Failed to find key");
+                break;
+        }
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] cipherText = cipher.doFinal(plaintext.getBytes());
+
+    }
+
+    public static String decrypt(String ciphertext, int keyInt) {
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
+        switch (keyInt){
+            case 0:
+                PublicKey key = readPublicKeyNative("./keys/generated/server_pub.pem");
+                break;
+            case 1:
+                PrivateKey key = readPrivateKeyNative("./keys/generated/server_priv.pem");
+                break;
+            case 2:
+                PublicKey key = readPublicKeyNative("./keys/generated/client_pub.pem");
+                break;
+            case 4:
+                PrivateKey key = readPrivateKeyNative("./keys/generated/client_priv.pem");
+                break;
+            default:
+                PrivateKey key = null;
+                System.out.println("Failed to find key");
+                break;
+        }
+    }    
+
+
     /*public static void printMe (){
         System.out.println("hello");
     }*/
