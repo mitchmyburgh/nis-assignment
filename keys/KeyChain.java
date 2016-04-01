@@ -19,6 +19,10 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.InvalidKeyException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
@@ -189,50 +193,129 @@ public class KeyChain {
     }
 
     public static String encrypt(String plaintext, int keyInt) {
-        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        }
+        PublicKey pubKey = null;
+        PrivateKey privKey = null;
         switch (keyInt){
             case 0:
-                PublicKey key = readPublicKeyNative("./keys/generated/server_pub.pem");
+                pubKey = readPublicKeyNative("./keys/generated/server_pub.pem");
+                System.out.println("Encrypting with Server Public Key");
                 break;
             case 1:
-                PrivateKey key = readPrivateKeyNative("./keys/generated/server_priv.pem");
+                privKey = readPrivateKeyNative("./keys/generated/server_priv.pem");
+                System.out.println("Encrypting with Server Private Key");
                 break;
             case 2:
-                PublicKey key = readPublicKeyNative("./keys/generated/client_pub.pem");
+                pubKey = readPublicKeyNative("./keys/generated/client_pub.pem");
+                System.out.println("Encrypting with Client Private Key");
                 break;
             case 4:
-                PrivateKey key = readPrivateKeyNative("./keys/generated/client_priv.pem");
+                privKey = readPrivateKeyNative("./keys/generated/client_priv.pem");
+                System.out.println("Encrypting with Client Private Key");
                 break;
             default:
-                PrivateKey key = null;
                 System.out.println("Failed to find key");
                 break;
         }
-        cipher.init(Cipher.ENCRYPT_MODE, key);
-        byte[] cipherText = cipher.doFinal(plaintext.getBytes());
-
+        if (cipher != null && pubKey != null){
+            try {
+                cipher.init(Cipher.ENCRYPT_MODE, pubKey);
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            }
+        } else if (cipher != null && privKey != null){
+            try {
+                cipher.init(Cipher.ENCRYPT_MODE, privKey);
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            }
+        } else {
+            return "";
+        }
+        byte[] ciphertext = null;
+        try {
+            ciphertext = cipher.doFinal(plaintext.getBytes());
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } 
+        byte[] ciphertextB64 = org.apache.commons.codec.binary.Base64.encodeBase64(ciphertext);
+        System.out.println("plaintext: " + plaintext);
+        System.out.println("ciphertext: " + new String(ciphertextB64));
+        return new String(ciphertextB64);
     }
 
     public static String decrypt(String ciphertext, int keyInt) {
-        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        }
+        PublicKey pubKey = null;
+        PrivateKey privKey = null;
         switch (keyInt){
             case 0:
-                PublicKey key = readPublicKeyNative("./keys/generated/server_pub.pem");
+                pubKey = readPublicKeyNative("./keys/generated/server_pub.pem");
+                System.out.println("Decrypting with Server Public Key");
                 break;
             case 1:
-                PrivateKey key = readPrivateKeyNative("./keys/generated/server_priv.pem");
+                privKey = readPrivateKeyNative("./keys/generated/server_priv.pem");
+                System.out.println("Decrypting with Server Private Key");
                 break;
             case 2:
-                PublicKey key = readPublicKeyNative("./keys/generated/client_pub.pem");
+                pubKey = readPublicKeyNative("./keys/generated/client_pub.pem");
+                System.out.println("Decrypting with Client Private Key");
                 break;
             case 4:
-                PrivateKey key = readPrivateKeyNative("./keys/generated/client_priv.pem");
+                privKey = readPrivateKeyNative("./keys/generated/client_priv.pem");
+                System.out.println("Decrypting with Client Private Key");
                 break;
             default:
-                PrivateKey key = null;
                 System.out.println("Failed to find key");
                 break;
         }
+        if (cipher != null && pubKey != null){
+            try {
+                cipher.init(Cipher.DECRYPT_MODE, pubKey);
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            }
+        } else if (cipher != null && privKey != null){
+            try {
+                cipher.init(Cipher.DECRYPT_MODE, privKey);
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            }
+        } else {
+            return "";
+        }
+        byte[] plaintext = null;
+        try {
+            plaintext = cipher.doFinal(ciphertext.getBytes());
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        }  
+        byte[] plaintextB64 = org.apache.commons.codec.binary.Base64.encodeBase64(plaintext);
+        System.out.println("ciphertext: " + ciphertext);
+        System.out.println("plaintext: " + new String(plaintextB64));
+        return new String(plaintextB64);
     }    
 
 
