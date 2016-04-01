@@ -57,9 +57,9 @@ public class KeyChain {
         // generate client key pair
         writeKeys("./keys/generated/client_pub.pem", "./keys/generated/client_priv.pem");
     }
-        /**
-        * Code adapted from http://stackoverflow.com/questions/29221947/unable-to-use-public-rsa-key-pem-file-created-with-bouncycastle-to-encrypt-fil
-        */
+    /**
+    * Code adapted from http://stackoverflow.com/questions/29221947/unable-to-use-public-rsa-key-pem-file-created-with-bouncycastle-to-encrypt-fil
+    */
     public static void writeKeys(String publicPath, String privatePath) {
         System.out.println("Writing Keypair: "+publicPath+" and "+privatePath);
         Security.addProvider(new BouncyCastleProvider());
@@ -84,22 +84,19 @@ public class KeyChain {
         return keyPair;
     }
 
-         public static void writePemFile(Key key, String description,String filename) {
-
+    public static void writePemFile(Key key, String description,String filename) {
         PemObject pemObject = new PemObject(description, key.getEncoded());
         PemWriter pemWriter=null;
         try {
             pemWriter = new PemWriter(new OutputStreamWriter(
                     new FileOutputStream(filename)));
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         try {
             pemWriter.writeObject(pemObject);
             pemWriter.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } 
 
@@ -114,30 +111,23 @@ public class KeyChain {
         try {
             publicKeyFileBytes = Files.readAllBytes(Paths.get(publicKeyPath));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         String KeyString = new String(publicKeyFileBytes);
-        //System.out.println(KeyString);
-        //System.out.println("FORMATTED:");
         KeyString = KeyString.replaceAll("-----BEGIN PUBLIC KEY-----", "");
         KeyString = KeyString.replaceAll("-----END PUBLIC KEY-----", "");
         KeyString = KeyString.replaceAll("[\n\r]", "");
         KeyString = KeyString.trim();
-        //System.out.println(KeyString);
 
         byte[] encoded = Base64.getDecoder().decode(KeyString);
 
-        // PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
         try {
             factory = KeyFactory.getInstance("RSA");
             key = factory.generatePublic(keySpec);
         } catch (NoSuchAlgorithmException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return key;
@@ -152,30 +142,23 @@ public class KeyChain {
         try {
             privateKeyFileBytes = Files.readAllBytes(Paths.get(privateKeyPath));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         String KeyString = new String(privateKeyFileBytes);
-        //System.out.println(KeyString);
-        //System.out.println("FORMATTED:");
         KeyString = KeyString.replaceAll("-----BEGIN PRIVATE KEY-----", "");
         KeyString = KeyString.replaceAll("-----END PRIVATE KEY-----", "");
         KeyString = KeyString.replaceAll("[\n\r]", "");
         KeyString = KeyString.trim();
-        //System.out.println(KeyString);
 
         byte[] encoded = Base64.getDecoder().decode(KeyString);
 
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
-        // X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
         try {
             factory = KeyFactory.getInstance("RSA");
             key = factory.generatePrivate(keySpec);
         } catch (NoSuchAlgorithmException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return key;
@@ -239,8 +222,8 @@ public class KeyChain {
             e.printStackTrace();
         } 
         byte[] ciphertextB64 = org.apache.commons.codec.binary.Base64.encodeBase64(ciphertext);
-        System.out.println("plaintext: " + plaintext);
-        System.out.println("ciphertext: " + new String(ciphertextB64));
+        System.out.println("Plaintext: " + plaintext);
+        System.out.println("Ciphertext: " + new String(ciphertextB64));
         return new String(ciphertextB64);
     }
 
@@ -303,13 +286,8 @@ public class KeyChain {
             e.printStackTrace();
         }  
         byte[] plaintextB64 = org.apache.commons.codec.binary.Base64.encodeBase64(plaintext);
-        System.out.println("ciphertext: " + ciphertext);
-        System.out.println("plaintext: " + new String(plaintext));
+        System.out.println("Ciphertext: " + ciphertext);
+        System.out.println("Plaintext: " + new String(plaintext));
         return new String(plaintext);
-    }    
-
-
-    /*public static void printMe (){
-        System.out.println("hello");
-    }*/
+    }
 }
