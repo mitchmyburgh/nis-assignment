@@ -27,8 +27,8 @@ public class Client {
 	 try { 
 		clientSocket = new Socket ("localhost", 6969);
 		os =  new PrintStream (clientSocket.getOutputStream());
-		is = new DataInputStream (clientSocket. getInputStream());
-		inputLine = new DataInputStream ( clientSocket.getInputStream());
+		is = new DataInputStream (clientSocket.getInputStream());
+		//inputLine = new DataInputStream ( clientSocket.getInputStream());
 		inputLine =  new DataInputStream (new BufferedInputStream(System.in));
 		} catch (UnknownHostException e) {
 		 System.err.println(" Don't know about host");
@@ -51,27 +51,35 @@ public class Client {
 			 *
 			 */
 			 
-			 System.out.println(" The client started. Type any text. to quit it type 'ok'");
-			 String responseLine;
+			 //System.out.println(" The client started. Type any text. to quit it type 'ok'");
+			 String responseLine = " The client started. Type any text. to quit it type 'ok'";
+			 String message;
 			 
-			 os.println(inputLine.readLine());
-			 while ((responseLine = is.readLine()) != null) {
+			 //os.println(inputLine.readLine());
+			do {
+				System.out.println(responseLine);
 				
 				//Encrypt here
-				String message = inputLine.readLine();
+				message = inputLine.readLine();
+				if (message.equals("ok")){
+					break;
+				}
+				System.out.println("===== Message =====");
+				System.out.println(message);
 				String theHash=Hash.hash(message);
-				String encryptedH=KeyChain.encrypt(theHash,KeyChain.PRIVATE_KEY_CLIENT);
+				System.out.println("Hash ="+theHash);
+				String encryptedH = KeyChain.encrypt(theHash,KeyChain.PRIVATE_KEY_CLIENT);
+				System.out.println("======="+encryptedH);
 				String signedMessage=message+"<SignedHashStartsHere>"+encryptedH;
 				byte[] zippedText=Zipfile.compress(signedMessage);
-				String encryptedText=AES.encrypt("Bar12345Bar12345", "RandomInitVector", new String(zippedText));
+				System.out.println("hererererer = "+zippedText);
+				String encryptedText=AES.encrypt("Bar12345Bar12345", "RandomInitVector", new String(org.apache.commons.codec.binary.Base64.encodeBase64(zippedText)));
 				String encryptedKeys=KeyChain.encrypt("Bar12345Bar12345"+"<InitialisatioVectorStartsHere>"+"RandomInitVector",KeyChain.PUBLIC_KEY_SERVER);
 				String output=encryptedText+"<EncryptedKeyStartsHere>"+encryptedKeys;
 				System.out.println(output);
-				if ( responseLine.indexOf("OK") != -1) {
-					break;
-					}
+
 					os.println(output);
-					}
+					}  while ((responseLine = is.readLine()) != null);
 					
 					
 					os.close();

@@ -167,10 +167,8 @@ public class KeyChain {
     public static String encrypt(String plaintext, int keyInt) {
         Cipher cipher = null;
         try {
-            cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
+            cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
             e.printStackTrace();
@@ -190,7 +188,7 @@ public class KeyChain {
                 pubKey = readPublicKeyNative("./keys/generated/client_pub.pem");
                 System.out.println("Encrypting with Client Private Key");
                 break;
-            case 4:
+            case 3:
                 privKey = readPrivateKeyNative("./keys/generated/client_priv.pem");
                 System.out.println("Encrypting with Client Private Key");
                 break;
@@ -231,10 +229,8 @@ public class KeyChain {
         Cipher cipher = null;
         byte[] ciphertextByte = org.apache.commons.codec.binary.Base64.decodeBase64(ciphertext.getBytes());
         try {
-            cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
+            cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
             e.printStackTrace();
@@ -254,7 +250,7 @@ public class KeyChain {
                 pubKey = readPublicKeyNative("./keys/generated/client_pub.pem");
                 System.out.println("Decrypting with Client Private Key");
                 break;
-            case 4:
+            case 3:
                 privKey = readPrivateKeyNative("./keys/generated/client_priv.pem");
                 System.out.println("Decrypting with Client Private Key");
                 break;

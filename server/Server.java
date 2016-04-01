@@ -1,3 +1,5 @@
+package server;
+
 import java.io.DataInputStream;
 import java.io.PrintStream;
 import java.io.IOException;
@@ -49,14 +51,18 @@ public class Server {
 					System.out.println("==== Encrypted & Zipped Message ====");
 					System.out.println(parts[0]);
 					String zippedFile = AES.decrypt(keys[0],keys[1],parts[0]);
-					String plainTextAndHash = Zipfile.decompress(zippedFile.getBytes()); 
-					parts = line.split("<SignedHashStartsHere>");
+					System.out.println("check hererrerere: "+zippedFile.getBytes());
+					String plainTextAndHash = Zipfile.decompress(org.apache.commons.codec.binary.Base64.decodeBase64(zippedFile.getBytes())); 
+					System.out.println("===== plainTextAndHash =====");
+					System.out.println(plainTextAndHash);
+					parts = plainTextAndHash.split("<SignedHashStartsHere>");
 					String recievedHash = KeyChain.decrypt(parts[1], KeyChain.PUBLIC_KEY_CLIENT);
 					String calculatedHash = Hash.hash(parts[0]);
 					System.out.println("==== Plaintext Message =====");
 					System.out.println(parts[0]);
 					if (recievedHash.equals(calculatedHash)){
 						System.out.println("The content of the message is authenticated\nand the integrity has been verified");
+						os.println("The content of the message is authenticated and the integrity has been verified");
 					}
 
 				}
