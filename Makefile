@@ -15,11 +15,11 @@ SOURCES = client/Client.java server/Server.java keys/KeyChain.java hash/Hash.jav
 
 #default rule - will be invoked by make
 
-client/Client.class: common/Hash.class keys/KeyChain.class client/Client.java
+client/Client.class: common/Hash.class common/KeyChain.class client/Client.java
 
-server/Server.class: common/Hash.class keys/KeyChain.class server/Server.java
+server/Server.class: common/Hash.class common/KeyChain.class server/Server.java
 
-keys/KeyChain.class: keys/KeyChain.java
+common/KeyChain.class: common/KeyChain.java
 
 common/Hash.class: common/Hash.java
 
@@ -41,4 +41,4 @@ run-server:
 	@java -cp '.:lib/org.bouncycastle.jar:lib/commons-codec-1.10.jar' server/Server
 
 run-keygen:
-	@java -cp '.:lib/org.bouncycastle.jar:lib/commons-codec-1.10.jar' keys/KeyChain
+	@java -cp '.:lib/org.bouncycastle.jar:lib/commons-codec-1.10.jar' common/KeyChain
