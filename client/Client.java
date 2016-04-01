@@ -5,7 +5,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import keys.KeyChain;
+import common.KeyChain;
 
 public class Client {
 	public static void main(String[] args) {
