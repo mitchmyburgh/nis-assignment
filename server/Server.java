@@ -51,7 +51,7 @@ public class Server {
 					String zippedFile = AES.decrypt(keys[0],keys[1],parts[0]);
 					String plainTextAndHash = Zipfile.decompress(zippedFile.getBytes()); 
 					parts = line.split("<SignedHashStartsHere>");
-					String recievedHash =KeyChain.decrypt(parts[1], KeyChain.PUBLIC_KEY_CLIENT);
+					String recievedHash = KeyChain.decrypt(parts[1], KeyChain.PUBLIC_KEY_CLIENT);
 					String calculatedHash = Hash.hash(parts[0]);
 					System.out.println("==== Plaintext Message =====");
 					System.out.println(parts[0]);
