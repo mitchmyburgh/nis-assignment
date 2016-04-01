@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-public class zipFile {
+public class Zipfile {
 
     public static byte[] compress(final String str) throws IOException {
         if ((str == null) || (str.length() == 0)) {
