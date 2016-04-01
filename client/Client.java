@@ -18,7 +18,7 @@ public class Client {
 	 */
 	 
 	 try { 
-		clientSocket = new Socket ("localhost", 2222);
+		clientSocket = new Socket ("localhost", 6969);
 		os =  new PrintStream (clientSocket.getOutputStream());
 		is = new DataInputStream (clientSocket. getInputStream());
 		inputLine = new DataInputStream ( clientSocket.getInputStream());
