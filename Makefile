@@ -5,7 +5,7 @@
 JAVAC = javac
 JFLAGS = -g -cp '.:lib/org.bouncycastle.jar'
 
-SOURCES = client/Client.java server/Server.java keys/KeyChain.java
+SOURCES = client/Client.java server/Server.java keys/KeyChain.java hash/Hash.java
 
 # define general build rule for java sources
 .SUFFIXES:  .java  .class
@@ -15,11 +15,15 @@ SOURCES = client/Client.java server/Server.java keys/KeyChain.java
 
 #default rule - will be invoked by make
 
-client/Client.class: keys/KeyChain.class client/Client.java
+client/Client.class: common/Hash.class keys/KeyChain.class client/Client.java
 
-server/Server.class: keys/KeyChain.class server/Server.java
+server/Server.class: common/Hash.class keys/KeyChain.class server/Server.java
 
 keys/KeyChain.class: keys/KeyChain.java
+
+common/Hash.class: common/Hash.java
+
+common/AES.class: common/AES.java
 
 #string substitute .java for .class in SOURCES
 #to get dependency class files for def rule
@@ -27,11 +31,11 @@ keys/KeyChain.class: keys/KeyChain.java
  
 # explicit rules
 clean:
-	@rm *.class
+	@rm */*.class
 
 #Run the code
 run-client:
-	@java -cp client/ Client
+	@java -cp '.:lib/org.bouncycastle.jar;' client/Client
 
 run-server:
-	@java -cp server/ Server
+	@java -cp '.:lib/org.bouncycastle.jar;server/' Server

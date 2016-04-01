@@ -1,4 +1,4 @@
-package nis.KeyChain;
+package keys;
 
 import java.math.BigInteger;
 import java.security.KeyFactory;
@@ -106,5 +106,8 @@ public class KeyChain {
             e.printStackTrace();
         } 
 
+    }
+        public static void printHello(){
+        System.out.println("Hello world");
     }
 }

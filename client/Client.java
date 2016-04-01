@@ -1,9 +1,11 @@
+package client;
 import java.io.DataInputStream;
 import java.io.PrintStream;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import keys.KeyChain;
 
 public class Client {
 	public static void main(String[] args) {
@@ -12,6 +14,8 @@ public class Client {
 	DataInputStream is = null;
 	PrintStream os = null;
 	DataInputStream inputLine = null;
+
+	KeyChain.printHello();
 	
 	/* 
 	 * open a socket on port 2222.
