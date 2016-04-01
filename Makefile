@@ -42,5 +42,14 @@ run-client:
 run-server:
 	@java -cp '.:lib/org.bouncycastle.jar:lib/commons-codec-1.10.jar' server/Server
 
+run-aes:
+	@java -cp '.:lib/org.bouncycastle.jar:lib/commons-codec-1.10.jar' common/AES
+
+run-hash:
+	@java -cp '.:lib/org.bouncycastle.jar:lib/commons-codec-1.10.jar' common/Hash
+
+run-zipfile:
+	@java -cp '.:lib/org.bouncycastle.jar:lib/commons-codec-1.10.jar' common/Zipfile
+
 run-keygen:
 	@java -cp '.:lib/org.bouncycastle.jar:lib/commons-codec-1.10.jar' common/KeyChain

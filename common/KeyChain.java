@@ -44,44 +44,45 @@ import org.bouncycastle.util.io.pem.PemWriter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class KeyChain {
-        public static final int KEY_SIZE = 2046;
-        public static final int PUBLIC_KEY_SERVER = 0;
-        public static final int PRIVATE_KEY_SERVER = 1;
-        public static final int PUBLIC_KEY_CLIENT = 2;
-        public static final int PRIVATE_KEY_CLIENT = 3;
-	// http://stackoverflow.com/questions/5789685/rsa-encryption-with-given-public-key-in-java
+    //instance variables
+    public static final int KEY_SIZE = 2046;
+    public static final int PUBLIC_KEY_SERVER = 0;
+    public static final int PRIVATE_KEY_SERVER = 1;
+    public static final int PUBLIC_KEY_CLIENT = 2;
+    public static final int PRIVATE_KEY_CLIENT = 3;
+
 	public static void main (String [] args) throws Exception {
-                // generate server key pair
-                writeKeys("./keys/generated/server_pub.pem", "./keys/generated/server_priv.pem");
-                // generate client key pair
-                writeKeys("./keys/generated/client_pub.pem", "./keys/generated/client_priv.pem");
-        }
+        // generate server key pair
+        writeKeys("./keys/generated/server_pub.pem", "./keys/generated/server_priv.pem");
+        // generate client key pair
+        writeKeys("./keys/generated/client_pub.pem", "./keys/generated/client_priv.pem");
+    }
         /**
         * Code adapted from http://stackoverflow.com/questions/29221947/unable-to-use-public-rsa-key-pem-file-created-with-bouncycastle-to-encrypt-fil
         */
-        public static void writeKeys(String publicPath, String privatePath) {
-            System.out.println("Writing Keypair: "+publicPath+" and "+privatePath);
-            Security.addProvider(new BouncyCastleProvider());
+    public static void writeKeys(String publicPath, String privatePath) {
+        System.out.println("Writing Keypair: "+publicPath+" and "+privatePath);
+        Security.addProvider(new BouncyCastleProvider());
 
-            KeyPair keyPair = generateRSAKeyPair();
-            PrivateKey priv = keyPair.getPrivate();
-            PublicKey pub = keyPair.getPublic();
-            writePemFile(priv, "PRIVATE KEY", privatePath);
-            writePemFile(pub, "PUBLIC KEY", publicPath);
+        KeyPair keyPair = generateRSAKeyPair();
+        PrivateKey priv = keyPair.getPrivate();
+        PublicKey pub = keyPair.getPublic();
+        writePemFile(priv, "PRIVATE KEY", privatePath);
+        writePemFile(pub, "PUBLIC KEY", publicPath);
     }
 
     private static KeyPair generateRSAKeyPair(){
         KeyPairGenerator generator=null;
         try {
-                generator = KeyPairGenerator.getInstance("RSA", "BC");
-            } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-                e.printStackTrace();
-            }
-            SecureRandom random = new SecureRandom();
-            generator.initialize(KEY_SIZE, random);
-            KeyPair keyPair = generator.generateKeyPair();
-            return keyPair;
+            generator = KeyPairGenerator.getInstance("RSA", "BC");
+        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+            e.printStackTrace();
         }
+        SecureRandom random = new SecureRandom();
+        generator.initialize(KEY_SIZE, random);
+        KeyPair keyPair = generator.generateKeyPair();
+        return keyPair;
+    }
 
          public static void writePemFile(Key key, String description,String filename) {
 
