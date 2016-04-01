@@ -34,6 +34,7 @@ public class Server {
 			/* Echo data back to client */
 			while (true) {
 				line = is.readLine();
+				System.out.println(line);
 				os.println("From server: "+line);
 			}
 		} catch (IOException e) {
