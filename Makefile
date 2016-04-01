@@ -3,7 +3,7 @@
 #2013/03/03
 
 JAVAC = javac
-JFLAGS = -g -cp '.:lib/org.bouncycastle.jar'
+JFLAGS = -g -cp '.:lib/org.bouncycastle.jar;common/;keys/'
 
 SOURCES = client/Client.java server/Server.java keys/KeyChain.java hash/Hash.java
 
@@ -15,13 +15,15 @@ SOURCES = client/Client.java server/Server.java keys/KeyChain.java hash/Hash.jav
 
 #default rule - will be invoked by make
 
-client/Client.class: hash/Hash.class keys/KeyChain.class client/Client.java
+client/Client.class: common/Hash.class keys/KeyChain.class client/Client.java
 
-server/Server.class: hash/Hash.class keys/KeyChain.class server/Server.java
+server/Server.class: common/Hash.class keys/KeyChain.class server/Server.java
 
 keys/KeyChain.class: keys/KeyChain.java
 
-hash/Hash.class: hash/Hash.java
+common/Hash.class: common/Hash.java
+
+common/AES.class: common/AES.java
 
 #string substitute .java for .class in SOURCES
 #to get dependency class files for def rule
@@ -29,7 +31,7 @@ hash/Hash.class: hash/Hash.java
  
 # explicit rules
 clean:
-	@rm *.class
+	@rm compiled/*.class
 
 #Run the code
 run-client:
