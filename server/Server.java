@@ -44,10 +44,11 @@ public class Server {
 				String[] parts = line.split("<EncryptedKeyStartsHere>");
 				if (parts.length==2){
 					String sessionKey = KeyChain.decrypt(parts[1], KeyChain.PRIVATE_KEY_SERVER);
+					String[] keys = sessionKey.split("<InitialisatioVectorStartsHere>");
 					System.out.println("Session Key: "+sessionKey);
 					System.out.println("==== Encrypted & Zipped Message ====");
 					System.out.println(parts[0]);
-					String zippedFile = AES.decrypt(sessionKey,parts[0]);
+					String zippedFile = AES.decrypt(keys[0],keys[1],parts[0]);
 					String plainTextAndHash = Zipfile.decompress(zippedFile.getBytes()); 
 					parts = line.split("<SignedHashStartsHere>");
 					String recievedHash =KeyChain.decrypt(parts[1], KeyChain.PUBLIC_KEY_CLIENT);
