@@ -45,7 +45,7 @@ public class Server {
 				if (parts.length==2){
 					String sessionKey = KeyChain.decrypt(parts[1], KeyChain.PRIVATE_KEY_SERVER);
 					String[] keys = sessionKey.split("<InitialisatioVectorStartsHere>");
-					System.out.println("Session Key: "+sessionKey);
+					System.out.println("Session Key: "+keys[0]+" and Initialisation Vector"+keys[1]);
 					System.out.println("==== Encrypted & Zipped Message ====");
 					System.out.println(parts[0]);
 					String zippedFile = AES.decrypt(keys[0],keys[1],parts[0]);
