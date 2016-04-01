@@ -1,4 +1,23 @@
+
+import java.security.Key;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.apache.commons.codec.binary.Base64;
+
 public class AES{
+
+byte[] salt = {
+    (byte)0xc7, (byte)0x73, (byte)0x21, (byte)0x8c,
+    (byte)0x7e, (byte)0xc8, (byte)0xee, (byte)0x99
+};
+
+public generateKeySpec(String password){
+	SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+	KeySpec spec = new PBEKeySpec(password, salt, 65536, 256);
+	SecretKey tmp = factory.generateSecret(spec);
+	SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
+}
 
 public static String encrypt(String key, String toEncrypt) throws Exception {
     Key skeySpec = generateKeySpec(key);
