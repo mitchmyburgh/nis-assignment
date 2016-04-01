@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import common.KeyChain;
+import common.Hash;
+import common.AES;
+import common.Zipfile;
 
 public class Client {
 	public static void main(String[] args) {
@@ -18,7 +21,7 @@ public class Client {
 	//KeyChain.printMe();
 	
 	/* 
-	 * open a socket on port 2222.
+	 * open a socket on port 6969.
 	 */
 	 
 	 try { 
@@ -50,13 +53,24 @@ public class Client {
 			 
 			 System.out.println(" The client started. Type any text. to quit it type 'ok'");
 			 String responseLine;
+			 
 			 os.println(inputLine.readLine());
 			 while ((responseLine = is.readLine()) != null) {
-				System.out.println(responseLine);
+				
+				//Encrypt here
+				String message = inputLine.readLine();
+				String theHash=Hash.hash(message);
+				String encryptedH=KeyChain.encrypt(theHash,KeyChain.PRIVATE_KEY_CLIENT);
+				String signedMessage=message+"<SignedHashStartsHere>"+encryptedH;
+				byte[] zippedText=Zipfile.compress(signedMessage);
+				String encryptedText=AES.encrypt("Bar12345Bar12345", "RandomInitVector", new String(zippedText));
+				String encryptedKeys=KeyChain.encrypt("Bar12345Bar12345"+"<InitialisatioVectorStartsHere>"+"RandomInitVector",KeyChain.PUBLIC_KEY_SERVER);
+				String output=encryptedText+"<EncryptedKeyStartsHere>"+encryptedKeys;
+				System.out.println(output);
 				if ( responseLine.indexOf("OK") != -1) {
 					break;
 					}
-					os.println(inputLine.readLine());
+					os.println(output);
 					}
 					
 					
