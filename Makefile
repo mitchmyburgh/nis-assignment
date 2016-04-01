@@ -1,7 +1,7 @@
 #Makefile for Assignment 03 - edited from lecture slides
 #Mitch Myburgh (MYBMIT001)
 #2013/03/03
-
+SHELL := /bin/bash
 JAVAC = javac
 JFLAGS = -g -cp '.:lib/org.bouncycastle.jar'
 
@@ -35,7 +35,7 @@ clean:
 
 #Run the code
 run-client:
-	@java -cp '.:lib/org.bouncycastle.jar;' client/Client
+	@java -cp '.:lib/org.bouncycastle.jar' client/Client
 
 run-server:
-	@java -cp '.:lib/org.bouncycastle.jar;server/' Server
+	@java -cp '.:lib/org.bouncycastle.jar' server/Server
