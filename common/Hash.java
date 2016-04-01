@@ -3,10 +3,9 @@ import java.security.NoSuchAlgorithmException;
 
 public class Hash {
 
-	
-	 String hash="";
-	public String Hash(String plainText)
+	public static String hash(String plainText)
 	{
+		String hash="";	
 		String data = plainText;
 		MessageDigest messageDigest;
 		try {
@@ -24,5 +23,9 @@ public class Hash {
 		}
 		return hash;
 	}
+	public static void main(String[] args){
+		String a=Hash("Hello World I am tumelobjdfdffgjhiofgfgjiogjiofgjio");
+		System.out.println(a);
+		}
 
 }

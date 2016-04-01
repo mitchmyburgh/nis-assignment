@@ -44,61 +44,59 @@ import org.bouncycastle.util.io.pem.PemWriter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class KeyChain {
-        public static final int KEY_SIZE = 2046;
-        public static final int PUBLIC_KEY_SERVER = 0;
-        public static final int PRIVATE_KEY_SERVER = 1;
-        public static final int PUBLIC_KEY_CLIENT = 2;
-        public static final int PRIVATE_KEY_CLIENT = 3;
-	// http://stackoverflow.com/questions/5789685/rsa-encryption-with-given-public-key-in-java
-	public static void main (String [] args) throws Exception {
-                // generate server key pair
-                writeKeys("./keys/generated/server_pub.pem", "./keys/generated/server_priv.pem");
-                // generate client key pair
-                writeKeys("./keys/generated/client_pub.pem", "./keys/generated/client_priv.pem");
-        }
-        /**
-        * Code adapted from http://stackoverflow.com/questions/29221947/unable-to-use-public-rsa-key-pem-file-created-with-bouncycastle-to-encrypt-fil
-        */
-        public static void writeKeys(String publicPath, String privatePath) {
-            System.out.println("Writing Keypair: "+publicPath+" and "+privatePath);
-            Security.addProvider(new BouncyCastleProvider());
+    //instance variables
+    public static final int KEY_SIZE = 2046;
+    public static final int PUBLIC_KEY_SERVER = 0;
+    public static final int PRIVATE_KEY_SERVER = 1;
+    public static final int PUBLIC_KEY_CLIENT = 2;
+    public static final int PRIVATE_KEY_CLIENT = 3;
 
-            KeyPair keyPair = generateRSAKeyPair();
-            PrivateKey priv = keyPair.getPrivate();
-            PublicKey pub = keyPair.getPublic();
-            writePemFile(priv, "PRIVATE KEY", privatePath);
-            writePemFile(pub, "PUBLIC KEY", publicPath);
+	public static void main (String [] args) throws Exception {
+        // generate server key pair
+        writeKeys("./keys/generated/server_pub.pem", "./keys/generated/server_priv.pem");
+        // generate client key pair
+        writeKeys("./keys/generated/client_pub.pem", "./keys/generated/client_priv.pem");
+    }
+    /**
+    * Code adapted from http://stackoverflow.com/questions/29221947/unable-to-use-public-rsa-key-pem-file-created-with-bouncycastle-to-encrypt-fil
+    */
+    public static void writeKeys(String publicPath, String privatePath) {
+        System.out.println("Writing Keypair: "+publicPath+" and "+privatePath);
+        Security.addProvider(new BouncyCastleProvider());
+
+        KeyPair keyPair = generateRSAKeyPair();
+        PrivateKey priv = keyPair.getPrivate();
+        PublicKey pub = keyPair.getPublic();
+        writePemFile(priv, "PRIVATE KEY", privatePath);
+        writePemFile(pub, "PUBLIC KEY", publicPath);
     }
 
     private static KeyPair generateRSAKeyPair(){
         KeyPairGenerator generator=null;
         try {
-                generator = KeyPairGenerator.getInstance("RSA", "BC");
-            } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-                e.printStackTrace();
-            }
-            SecureRandom random = new SecureRandom();
-            generator.initialize(KEY_SIZE, random);
-            KeyPair keyPair = generator.generateKeyPair();
-            return keyPair;
+            generator = KeyPairGenerator.getInstance("RSA", "BC");
+        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+            e.printStackTrace();
         }
+        SecureRandom random = new SecureRandom();
+        generator.initialize(KEY_SIZE, random);
+        KeyPair keyPair = generator.generateKeyPair();
+        return keyPair;
+    }
 
-         public static void writePemFile(Key key, String description,String filename) {
-
+    public static void writePemFile(Key key, String description,String filename) {
         PemObject pemObject = new PemObject(description, key.getEncoded());
         PemWriter pemWriter=null;
         try {
             pemWriter = new PemWriter(new OutputStreamWriter(
                     new FileOutputStream(filename)));
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         try {
             pemWriter.writeObject(pemObject);
             pemWriter.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } 
 
@@ -113,30 +111,23 @@ public class KeyChain {
         try {
             publicKeyFileBytes = Files.readAllBytes(Paths.get(publicKeyPath));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         String KeyString = new String(publicKeyFileBytes);
-        //System.out.println(KeyString);
-        //System.out.println("FORMATTED:");
         KeyString = KeyString.replaceAll("-----BEGIN PUBLIC KEY-----", "");
         KeyString = KeyString.replaceAll("-----END PUBLIC KEY-----", "");
         KeyString = KeyString.replaceAll("[\n\r]", "");
         KeyString = KeyString.trim();
-        //System.out.println(KeyString);
 
         byte[] encoded = Base64.getDecoder().decode(KeyString);
 
-        // PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
         try {
             factory = KeyFactory.getInstance("RSA");
             key = factory.generatePublic(keySpec);
         } catch (NoSuchAlgorithmException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return key;
@@ -151,30 +142,23 @@ public class KeyChain {
         try {
             privateKeyFileBytes = Files.readAllBytes(Paths.get(privateKeyPath));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         String KeyString = new String(privateKeyFileBytes);
-        //System.out.println(KeyString);
-        //System.out.println("FORMATTED:");
         KeyString = KeyString.replaceAll("-----BEGIN PRIVATE KEY-----", "");
         KeyString = KeyString.replaceAll("-----END PRIVATE KEY-----", "");
         KeyString = KeyString.replaceAll("[\n\r]", "");
         KeyString = KeyString.trim();
-        //System.out.println(KeyString);
 
         byte[] encoded = Base64.getDecoder().decode(KeyString);
 
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
-        // X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
         try {
             factory = KeyFactory.getInstance("RSA");
             key = factory.generatePrivate(keySpec);
         } catch (NoSuchAlgorithmException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return key;
@@ -238,8 +222,8 @@ public class KeyChain {
             e.printStackTrace();
         } 
         byte[] ciphertextB64 = org.apache.commons.codec.binary.Base64.encodeBase64(ciphertext);
-        System.out.println("plaintext: " + plaintext);
-        System.out.println("ciphertext: " + new String(ciphertextB64));
+        System.out.println("Plaintext: " + plaintext);
+        System.out.println("Ciphertext: " + new String(ciphertextB64));
         return new String(ciphertextB64);
     }
 
@@ -302,13 +286,8 @@ public class KeyChain {
             e.printStackTrace();
         }  
         byte[] plaintextB64 = org.apache.commons.codec.binary.Base64.encodeBase64(plaintext);
-        System.out.println("ciphertext: " + ciphertext);
-        System.out.println("plaintext: " + new String(plaintext));
+        System.out.println("Ciphertext: " + ciphertext);
+        System.out.println("Plaintext: " + new String(plaintext));
         return new String(plaintext);
-    }    
-
-
-    /*public static void printMe (){
-        System.out.println("hello");
-    }*/
+    }
 }
