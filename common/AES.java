@@ -9,6 +9,8 @@ import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
 import java.security.spec.KeySpec; 
 import java.security.NoSuchAlgorithmException;
+import javax.crypto.spec.IvParameterSpec;
+import java.util.Random;
 
 public class AES{
 
@@ -53,21 +55,36 @@ public static String encrypt(String key, String toEncrypt) throws Exception {
     return new String(encryptedValue);
 }
 
+public static byte[] randByte(){
+   // create random object
+   Random randomno = new Random();
+      
+   // create byte array
+   byte[] nbyte = new byte[16];
+      
+   // put the next byte in the array
+   randomno.nextBytes(nbyte);
+   
+   // check the value of array   
+      return nbyte;
+   }   
+
 public static String decrypt(String key, String encrypted) throws Exception {
     Key skeySpec = generateKeySpec(key);
     byte[] original=null;
     	try {
-					
+				SecureRandom sr = SecureRandom.getInstance("SHA1PRNG","Crypto");
+				IvParameterSpec ivSpec = new IvParameterSpec(randByte());					
 				Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", new BouncyCastleProvider());
-				cipher.init(Cipher.DECRYPT_MODE, skeySpec);
+				cipher.init(Cipher.DECRYPT_MODE, skeySpec,ivSpec);
 				byte[] decodedBytes = Base64.decodeBase64(encrypted.getBytes());
 				original = cipher.doFinal(decodedBytes);
     
 		} 
-		catch (NoSuchAlgorithmException exception) 
+		catch (Exception e) 
 		{
 					// TODO Auto-generated catch block
-					exception.printStackTrace();
+					e.printStackTrace();
 		}
     
     return new String(original);
