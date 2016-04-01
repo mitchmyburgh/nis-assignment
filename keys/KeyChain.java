@@ -1,3 +1,5 @@
+package nis.KeyChain;
+
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPrivateKey;
@@ -55,9 +57,9 @@ public class KeyChain {
                 System.out.println(pubKey);
                 System.out.println(privKey);*/
                 // generate server key pair
-                this.writeKeys("./server_pub.pem", "./server_priv.pem");
+                writeKeys("./server_pub.pem", "./server_priv.pem");
                 // generate client key pair
-                this.writeKeys("./client_pub.pem", "./client_priv.pem");
+                writeKeys("./client_pub.pem", "./client_priv.pem");
         }
         /**
         * Code adapted from http://stackoverflow.com/questions/29221947/unable-to-use-public-rsa-key-pem-file-created-with-bouncycastle-to-encrypt-fil
@@ -84,4 +86,25 @@ public class KeyChain {
             KeyPair keyPair = generator.generateKeyPair();
             return keyPair;
         }
+
+         public static void writePemFile(Key key, String description,String filename) {
+
+        PemObject pemObject = new PemObject(description, key.getEncoded());
+        PemWriter pemWriter=null;
+        try {
+            pemWriter = new PemWriter(new OutputStreamWriter(
+                    new FileOutputStream(filename)));
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try {
+            pemWriter.writeObject(pemObject);
+            pemWriter.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } 
+
+    }
 }
