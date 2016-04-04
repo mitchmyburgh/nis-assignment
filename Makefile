@@ -30,7 +30,7 @@ common/Zipfile.class: common/Zipfile.java
 #string substitute .java for .class in SOURCES
 #to get dependency class files for def rule
 #will force time check on all .class/.java files
- 
+
 # explicit rules
 clean:
 	@rm */*.class
@@ -51,5 +51,5 @@ run-hash:
 run-zipfile:
 	@java -cp '.:lib/org.bouncycastle.jar:lib/commons-codec-1.10.jar' common/Zipfile
 
-run-keygen:
+run-keychain:
 	@java -cp '.:lib/org.bouncycastle.jar:lib/commons-codec-1.10.jar' common/KeyChain
