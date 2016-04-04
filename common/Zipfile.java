@@ -13,11 +13,12 @@ import java.io.UnsupportedEncodingException;
  * Modified from http://stackoverflow.com/questions/16351668/compression-and-decompression-of-string-data-in-java
  */
 public class Zipfile {
-
+//Text is compressed by the sender using this method
   public static byte[] compress(final String str) {
     System.out.println("=== Zipfile.compress() called ===");
     System.out.println("plaintext: "+str);
-    if ((str == null) || (str.length() == 0)) {
+    //check if empty string and return null
+	if ((str == null) || (str.length() == 0)) {
       return null;
     }
     ByteArrayOutputStream obj = new ByteArrayOutputStream();
@@ -27,7 +28,7 @@ public class Zipfile {
     } catch (IOException e){
       e.printStackTrace();
     }
-
+	//append text to gzip output stream
     try {
       gzip.write(str.getBytes("UTF-8"));
     } catch (UnsupportedEncodingException e){
@@ -44,17 +45,20 @@ public class Zipfile {
     System.out.println("=== Zipfile.compress() finished ===");
     return obj.toByteArray();
   }
-
+		//Text is decompressed by the receoient using this method
   public static String decompress(final byte[] compressed) {
     System.out.println("=== Zipfile.decompress() called ===");
     System.out.println("zipped file: "+compressed);
     String outStr = "";
-    if ((compressed == null) || (compressed.length == 0)) {
+    //check if string is empty and return an empty string
+	if ((compressed == null) || (compressed.length == 0)) {
       return "";
     }
-    if (isCompressed(compressed)) {
+    //Initialize GZIP InputStream if received string has been compressed
+	if (isCompressed(compressed)) {
       GZIPInputStream gis = null;
-      try {
+      //Append text to GZIP input stream
+	  try {
         gis = new GZIPInputStream(new ByteArrayInputStream(compressed));
       } catch (IOException e){
         e.printStackTrace();
@@ -68,7 +72,8 @@ public class Zipfile {
 
 
       String line;
-      try {
+      //Append each individual line to the output string while the bufferedReader is not empty 
+	  try {
         while ((line = bufferedReader.readLine()) != null) {
           outStr += line;
         }
@@ -86,12 +91,11 @@ public class Zipfile {
   public static boolean isCompressed(final byte[] compressed) {
     return (compressed[0] == (byte) (GZIPInputStream.GZIP_MAGIC)) && (compressed[1] == (byte) (GZIPInputStream.GZIP_MAGIC >> 8));
   }
+  //Test the compression algorithm by compressing and decompressing
   public static void main(String[] args){
     byte[] a=null;
     String d="";
     a =compress("Hello world");
     d=decompress(a);
-    //System.out.println(a);
-    //System.out.println(d);
   }
 }

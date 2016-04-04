@@ -71,27 +71,27 @@ public class Client {
 					}
 					System.out.println("=== Message ===");
 					System.out.println(message);
-
+					
+					//Message hashing occurs here
 					String theHash=Hash.hash(message);
-
 					System.out.println("=== Hash ===");
 					System.out.println(theHash);
-
+					//Hash encrypted
 					String encryptedH = KeyChain.encrypt(theHash,KeyChain.PRIVATE_KEY_CLIENT);
 
 					System.out.println("=== Encrypted Hash ===");
 					System.out.println(encryptedH);
-
+					//Hash is signed
 					String signedMessage=message+"<SignedHashStartsHere>"+encryptedH;
 
 					System.out.println("=== Signed Message ===");
 					System.out.println(signedMessage);
-
+					//Signed message is compressed using zip
 					byte[] zippedText=Zipfile.compress(signedMessage);
 
 					System.out.println("=== Zippped File ===");
 					System.out.println(zippedText);
-
+					//Compressed message is encrypted using AES
 					String encryptedText=AES.encrypt("Bar12345Bar12345", "RandomInitVector", new String(org.apache.commons.codec.binary.Base64.encodeBase64(zippedText)));
 
 					System.out.println("=== Encrypted File ===");
@@ -99,7 +99,7 @@ public class Client {
 
 					System.out.println("=== Key and Initialisation Vector ===");
 					System.out.println("Key: Bar12345Bar12345"+"Initialisation Vector: "+"RandomInitVector");
-
+					//Keys are encrypted
 					String encryptedKeys=KeyChain.encrypt("Bar12345Bar12345"+"<InitialisatioVectorStartsHere>"+"RandomInitVector",KeyChain.PUBLIC_KEY_SERVER);
 
 					System.out.println("=== Encrypted Keys ===");

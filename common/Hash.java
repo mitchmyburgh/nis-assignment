@@ -8,6 +8,9 @@ import java.security.NoSuchAlgorithmException;
 */
 public class Hash {
 
+	/*This method hash accepts plain text as a parameter and computes the hash of the plain text using MD5.
+	The hash is computed by both the message sender and recepient to ensure that the message has not been modified
+	*/
 	public static String hash(String plainText)
 	{
 		System.out.println("=== Hash.hash() called ===");
@@ -25,13 +28,13 @@ public class Hash {
 			}
 			hash=stringBuffer.toString();
 		} catch (NoSuchAlgorithmException exception) {
-			// TODO Auto-generated catch block
 			exception.printStackTrace();
 		}
 		System.out.println("hash: "+hash);
 		System.out.println("=== Hash.hash() finished ===");
 		return hash;
 	}
+	//The hashing algorithm is tested here
 	public static void main(String[] args){
 		String a=Hash.hash("Hello World I am Tumelo");
 		System.out.println(a);
