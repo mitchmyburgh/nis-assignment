@@ -5,7 +5,9 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
-
+/**
+* Code adapted from http://stackoverflow.com/questions/15554296/simple-java-aes-encrypt-decrypt-example
+*/
 public class AES{
 
 	public static String encrypt(String key, String initVector, String value) {

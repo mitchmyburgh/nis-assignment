@@ -10,7 +10,9 @@ import common.AES;
 import common.Hash;
 import common.Zipfile;
 
-
+/**
+ * Addpated from Keet, M. (2015). CSC3002F – Networks Assignment 2015: A simple client/server application
+ */
 public class Server {
 	public static void main(String args[]) {
 		ServerSocket echoServer = null;
