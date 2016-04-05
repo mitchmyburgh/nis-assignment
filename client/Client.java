@@ -100,7 +100,7 @@ public class Client {
 					System.out.println("=== Key and Initialisation Vector ===");
 					System.out.println("Key: Bar12345Bar12345"+"Initialisation Vector: "+"RandomInitVector");
 					//Keys are encrypted
-					String encryptedKeys=KeyChain.encrypt("Bar12345Bar12345"+"<InitialisatioVectorStartsHere>"+"RandomInitVector",KeyChain.PUBLIC_KEY_SERVER);
+					String encryptedKeys=KeyChain.encrypt("Bar12345Bar12345"+"<InitialisationVectorStartsHere>"+"RandomInitVector",KeyChain.PUBLIC_KEY_SERVER);
 
 					System.out.println("=== Encrypted Keys ===");
 					System.out.println(encryptedKeys);

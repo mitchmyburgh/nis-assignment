@@ -56,7 +56,7 @@ public class Server {
 							System.out.println("=== Encrypted Keys ===");
 							System.out.println(parts[1]);
 							String sessionKey = KeyChain.decrypt(parts[1], KeyChain.PRIVATE_KEY_SERVER);
-							String[] keys = sessionKey.split("<InitialisatioVectorStartsHere>");
+							String[] keys = sessionKey.split("<InitialisationVectorStartsHere>");
 							if (keys.length == 2) { //check for key and initialisation vector
 								System.out.println("=== Session Key and Initialisation Vector ===");
 								System.out.println("Session Key: "+keys[0]+" and Initialisation Vector: "+keys[1]);
